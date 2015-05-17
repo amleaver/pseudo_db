@@ -8,7 +8,7 @@ Using specific_install:
 
 ```ruby
 gem install specific_install
-gem specific_install -l <url to a github gem>
+gem specific_install -l https://github.com/amleaver/pseudo_db.git
 ```
 
 Or build and install from source:

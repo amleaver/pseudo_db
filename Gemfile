@@ -5,6 +5,7 @@ gem 'sequel'
 gem 'mysql'
 gem 'faker'
 gem 'deep_merge'
+gem 'colorize'
 
 group :test, :development do
   gem 'rspec'

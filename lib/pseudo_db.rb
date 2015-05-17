@@ -1,5 +1,5 @@
-require "pseudo_db/version"
-require "pseudo_db/database_anonymizer"
+require_relative "pseudo_db/version"
+require_relative "pseudo_db/database"
 
 module PseudoDb
 
@@ -25,7 +25,7 @@ module PseudoDb
     )
 
     data_dictionary = DataDictionary.new(options[:custom_dictionary])
-    db_anonymizer = DatabaseAnonymizer.new(sequel_connection, data_dictionary, options[:dry_run])
+    db_anonymizer = Database.new(sequel_connection, data_dictionary, options[:dry_run])
     db_anonymizer.anonymize
   end
 end

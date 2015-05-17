@@ -1,14 +1,16 @@
 require 'sequel'
-require_relative 'row_anonymizer'
+require_relative 'row'
 
 module PseudoDb
-  class DatabaseAnonymizer
+  class Database
     include Logging
 
     def initialize(sequel_connection, data_dictionary, dry_run = false)
       @database = sequel_connection
       @data_dictionary = data_dictionary
       @dry_run = dry_run
+
+      logger.warn 'Running in "dry-run" mode, database will not be updated' if dry_run
     end
 
     def anonymize
@@ -25,7 +27,7 @@ module PseudoDb
 
         table.all.each do |row|
           updateable_row = table.where(*row)
-          row_anonymizer = RowAnonymizer.new(row, table_name, @data_dictionary)
+          row_anonymizer = Row.new(row, table_name, @data_dictionary)
           anonymized_data = row_anonymizer.anonymize
           updateable_row.update(**anonymized_data) unless @dry_run
         end

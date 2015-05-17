@@ -28,7 +28,7 @@
     },
     phone_number: {
         aliases: [:phonenumber, :phone_num, :telephone_num, :telephonenum, :phone],
-        values: proc { "0#{rand(1) + 1}#{rand(899999999) + 100000000}" }
+        values: proc { "0#{rand(1) + 1}#{DataGenerator::random_number_string(9)}" }
     },
     email: {
         aliases: [:email_address, :email],
@@ -40,7 +40,7 @@
     },
     vat_number: {
         aliases: [:vatnumber],
-        values: proc{ "GB#{rand(899999999) + 100000000}" }
+        values: proc{ "GB#{DataGenerator::random_number_string(9)}" }
     },
     passport_number: {
         aliases: [:passport_num, :passportnumber],

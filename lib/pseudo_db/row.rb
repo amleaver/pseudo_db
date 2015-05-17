@@ -5,7 +5,7 @@ require_relative 'logging'
 require 'faker'
 
 module PseudoDb
-  class RowAnonymizer
+  class Row
     include Logging
 
     def initialize(row, table, data_dictionary)
@@ -31,14 +31,14 @@ module PseudoDb
       @row
     end
 
+    private
+
     def anonymize_field(field_to_update, properties)
       return if @row[field_to_update].nil? || @row[field_to_update].empty?
       randomised_value = randomize_value(properties)
       logger.debug "Setting #{field_to_update} from #{@row[field_to_update]} to #{randomised_value}"
       @row[field_to_update] = randomised_value
     end
-
-    private
 
     def randomize_value(properties)
       if properties[:values].is_a?(Proc)

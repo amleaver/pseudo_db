@@ -1,0 +1,91 @@
+#!/usr/bin/env ruby
+
+require 'getoptlong'
+require 'colorize'
+
+require_relative '../lib/pseudo_db'
+require_relative '../lib/pseudo_db/logging'
+require_relative '../lib/pseudo_db/version'
+
+include PseudoDb
+include PseudoDb::Logging
+
+opts = GetoptLong.new(
+    ['--help', GetoptLong::NO_ARGUMENT],
+    ['-u', GetoptLong::REQUIRED_ARGUMENT],
+    ['-p', GetoptLong::REQUIRED_ARGUMENT],
+    ['-h', GetoptLong::REQUIRED_ARGUMENT],
+    ['-d', GetoptLong::REQUIRED_ARGUMENT],
+    ['-l', GetoptLong::REQUIRED_ARGUMENT],
+    ['-c', GetoptLong::REQUIRED_ARGUMENT],
+    ['-a', GetoptLong::REQUIRED_ARGUMENT],
+    ['--dry-run', '-r', GetoptLong::NO_ARGUMENT],
+)
+
+options = {}
+log_level = -1
+
+opts.each do |opt, arg|
+  case opt
+    when '--help'
+      puts <<-EOF
+pseudo_db [OPTIONS]
+
+--help:
+   show help
+
+-u username <username>:
+   database username, users 'mysql' if not supplied
+
+-p password <password>:
+   database password, null if not supplied
+
+-h host <host>:
+   database host, defaults to 'localhost' if not supplied
+
+-a database adapter <adapter>:
+   database adapter, uses 'mysql' if not supplied
+
+-d database name <database>:
+   database to anonymise, uses 'test' if not supplied
+
+-c custom data dictionary <database>:
+   custom data dictionary to use
+
+-l debug <level>:
+   print debug output (0 = info, 1 = debug)
+
+-r, --dry-run:
+   dry-run, database won't be updated
+
+Version: #{PseudoDb::VERSION}
+      EOF
+      exit 0
+    when '-c'
+      options[:custom_dictionary] = arg.to_s
+    when '-u'
+      options[:user] = arg.to_s
+    when '-p'
+      options[:password] = arg.to_s
+    when '-d'
+      options[:database] = arg.to_s
+    when '-a'
+      options[:adapter] = arg.to_s
+    when '-l'
+      log_level = arg.to_i
+    when '-r', '--dry-run'
+      options[:dry_run] = true
+  end
+end
+
+logger.sev_threshold = log_level if log_level >= 0
+
+puts 'Anonymizing database...'
+begin
+  anonymize(options)
+
+  puts "Database anonymized".green
+rescue StandardError => ex
+  puts ex.message.red
+  puts "\t" + ex.backtrace.join("\n\t")
+end
