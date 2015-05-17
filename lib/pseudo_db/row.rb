@@ -35,14 +35,14 @@ module PseudoDb
 
     def anonymize_field(field_to_update, properties)
       return if @row[field_to_update].nil? || @row[field_to_update].empty?
-      randomised_value = randomize_value(properties)
+      randomised_value = randomize_value(properties, @row[field_to_update])
       logger.debug "Setting #{field_to_update} from #{@row[field_to_update]} to #{randomised_value}"
       @row[field_to_update] = randomised_value
     end
 
-    def randomize_value(properties)
+    def randomize_value(properties, current_value)
       if properties[:values].is_a?(Proc)
-        return properties[:values].call
+        return properties[:values].call(current_value)
       else
         return properties[:values].sample
       end

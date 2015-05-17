@@ -7,6 +7,7 @@
 /pkg/
 /spec/reports/
 /tmp/
+/.idea/
 
 custom_dictionary.rb
 spec/tester.rb

@@ -32,11 +32,11 @@
     },
     email: {
         aliases: [:email_address, :email],
-        values: proc { DataGenerator.username + '@example.com' }
+        values: proc { |arg| DataGenerator.username(arg) + '@example.com' }
     },
     username: {
         aliases: [:user_name, :display_name, :displayname],
-        values: proc { DataGenerator.username }
+        values: proc { |arg| DataGenerator.username(arg) }
     },
     vat_number: {
         aliases: [:vatnumber],

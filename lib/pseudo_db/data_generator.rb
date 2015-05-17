@@ -1,7 +1,21 @@
 module PseudoDb
   class DataGenerator
-    def self.username
-      "#{adjectives.sample}#{nouns.sample}#{rand(99)}"
+    def self.username(seed_username = nil)
+      return "#{adjectives.sample}#{nouns.sample}#{rand(99)}" if seed_username.nil?
+
+      adjective_seed = 0
+      noun_seed = 0
+      seed_username.each_byte.to_a.each_with_index do |char_ord, index|
+        if index % 2 == 0
+          adjective_seed += char_ord
+        else
+          noun_seed += char_ord
+        end
+      end
+
+      adjective = adjectives[adjective_seed % adjectives.size]
+      noun = nouns[noun_seed % nouns.size]
+      adjective + noun + (seed_username[0].ord - seed_username[seed_username.size - 1].ord).abs.to_s
     end
 
     def self.postcode
@@ -13,17 +27,17 @@ module PseudoDb
           "#{random_number_string(7)}#{'<' * 12}0#{random_number_string(1)}"
     end
 
-    private
-
     def self.random_number_string(length)
       rand_max = ('8'.to_s.concat('9' * (length - 1))).to_i
       plus = ('1'.to_s.concat('0' * (length - 1))).to_i
-      rand(rand_max)+plus
+      (rand(rand_max)+plus).to_s
     end
 
     def self.random_character_string(length)
       (0...length).map { (65 + rand(26)).chr }.join
     end
+
+    private
 
     def self.nouns
       %w( bambino beaver apple arm banana bike bird book chin clam clover club corn crayon crow crown crowd
